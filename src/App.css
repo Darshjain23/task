@@ -1,0 +1,16 @@
+/* .anticon > svg{
+    width: 48px !important;
+    height: 40px !important;
+} */
+*{
+    box-sizing: border-box;
+}
+.ant-menu-item{
+    margin-top: 15px !important;
+}
+
+@media (max-width: 768px) {
+    .searchBar{
+        
+    }
+}
