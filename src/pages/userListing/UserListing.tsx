@@ -1,9 +1,13 @@
 import {
   BarChartOutlined,
+  DownloadOutlined,
+  FilterOutlined,
+  IdcardOutlined,
+  PlusOutlined,
   SearchOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Button, Drawer, Image, Input, Table } from "antd";
+import { Button, Drawer, Image, Input, Select, Space, Table } from "antd";
 import { SyntheticEvent, useEffect, useState } from "react";
 
 const UserListing = () => {
@@ -14,6 +18,25 @@ const UserListing = () => {
   const [filteredData, setFilteredData] = useState<any[]>([]);
   // console.log(drawerData.company.name);
   //   const [records, setRecords] = useState([]);
+
+  const options = [
+    {
+      value: "aadhar card",
+      label: "Aadhar",
+    },
+    {
+      value: "pan card",
+      label: "PAN",
+    },
+    {
+      value: "voter id",
+      label: "Voter Id",
+    },
+    {
+      value: "Driving license",
+      label: "Driving License",
+    },
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -88,16 +111,25 @@ const UserListing = () => {
           </div>
           <Button className="hidden md:flex">+ Add user</Button>
         </div>
-        <div className="searchBar">
-          <Input
-            className="w-60 mt-10 mx-5 md:mx-20"
-            addonBefore={<SearchOutlined />}
-            onChange={handleSearch}
-          />
+        <div className="searchBar flex">
+          <div>
+            <Input
+              className="w-60 mt-10 mx-5 md:mx-20 rounded-3xl"
+              placeholder="Search"
+              prefix={<SearchOutlined />}
+              onChange={handleSearch}
+            />
+          </div>
+          <div className="mt-10 flex">
+            <FilterOutlined className="text-gray-300" />
+            <p className="ml-3 mt-1 text-gray-300">filter</p>
+          </div>
         </div>
         <div className="overflow-hidden p-5 w-full">
           <div className="min-[350px] overflow-x-auto">
             <Table
+              className="custom-table"
+              rowClassName={"border !m-5 !p-5"}
               columns={columns}
               dataSource={searchQuery ? filteredData : fetchedData?.users}
               rowKey="id"
@@ -157,6 +189,25 @@ const UserListing = () => {
           <h1 className="text-base">{drawerData?.address?.state},</h1>
           <h1 className="text-base">{drawerData?.address?.postalCode}</h1>
           <h1 className="text-base mt-2">{drawerData?.address?.country}</h1>
+          <div>
+            <hr className="mt-5" />
+            <div className="text-lg mt-5 flex">
+              <IdcardOutlined />
+              <p className="ml-3">Govt Id</p>
+              <Button
+                type="primary"
+                className="ml-44"
+                icon={<PlusOutlined />}
+                size={"small"}
+              />
+            </div>
+            <div className="mt-5">
+              <Space.Compact>
+                <Select defaultValue="aadhar card" options={options} />
+                <Input defaultValue="" />
+              </Space.Compact>
+            </div>
+          </div>
         </Drawer>
       </section>
     </>
