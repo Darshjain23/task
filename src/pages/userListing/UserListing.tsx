@@ -9,6 +9,7 @@ import {
 } from "@ant-design/icons";
 import { Button, Drawer, Image, Input, Select, Space, Table } from "antd";
 import { SyntheticEvent, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 const UserListing = () => {
   const [fetchedData, setfetchedData] = useState<any>([]);
@@ -16,10 +17,28 @@ const UserListing = () => {
   const [drawerData, setdrawerData] = useState<any>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [duplicateCount, setDuplicateCount] = useState(1);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    reValidateMode: "onChange",
+    defaultValues: {
+      aadhar: "",
+      pan: "",
+      voterid: "",
+      drivinglicense: "",
+    },
+  });
   // console.log(drawerData.company.name);
   //   const [records, setRecords] = useState([]);
 
   const options = [
+    {
+      value: "Select",
+    },
     {
       value: "aadhar card",
       label: "Aadhar",
@@ -97,8 +116,17 @@ const UserListing = () => {
     },
   ];
 
+  console.log("ASDFGHJ", [...Array(duplicateCount)]);
   const handleSearch = (e: any) => {
     setSearchQuery(e.target.value);
+  };
+
+  const handleAddDuplicate = () => {
+    if (duplicateCount < 4) {
+      setDuplicateCount(duplicateCount + 1);
+    }else{
+      
+    }
   };
 
   return (
@@ -125,7 +153,7 @@ const UserListing = () => {
             <p className="ml-3 mt-1 text-gray-300">filter</p>
           </div>
         </div>
-        <div className="overflow-hidden p-5 w-full">
+        <div className=" p-5 w-full">
           <div className="min-[350px] overflow-x-auto">
             <Table
               className="custom-table"
@@ -199,14 +227,19 @@ const UserListing = () => {
                 className="ml-44"
                 icon={<PlusOutlined />}
                 size={"small"}
+                onClick={handleAddDuplicate}
               />
             </div>
-            <div className="mt-5">
-              <Space.Compact>
-                <Select defaultValue="aadhar card" options={options} />
-                <Input defaultValue="" />
-              </Space.Compact>
-            </div>
+            {[...Array(duplicateCount)].map((_, index) => (
+              <div className="mt-5" key={index}>
+                <Space.Compact>
+                  <Select defaultValue="Select" options={options} />
+                  <Input defaultValue="" />
+                </Space.Compact>
+              </div>
+               
+            ))}
+            <Button type="primary" className="mt-3">Submit</Button>
           </div>
         </Drawer>
       </section>

@@ -210,7 +210,7 @@ const Signup = () => {
               control={control}
               rules={{ required: "Password is required" }}
               name="password"
-              render={({ field: { onChange, value } }) => (
+              render={({ field: { onChange, value } }) => ( 
                 <>
                   <Input.Password
                     placeholder="Enter your password"
