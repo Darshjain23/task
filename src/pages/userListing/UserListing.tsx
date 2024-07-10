@@ -1,6 +1,5 @@
 import {
   BarChartOutlined,
-  DownloadOutlined,
   FilterOutlined,
   IdcardOutlined,
   PlusOutlined,
@@ -9,7 +8,6 @@ import {
 } from "@ant-design/icons";
 import { Button, Drawer, Image, Input, Select, Space, Table } from "antd";
 import { SyntheticEvent, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 
 const UserListing = () => {
   const [fetchedData, setfetchedData] = useState<any>([]);
@@ -18,20 +16,14 @@ const UserListing = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [duplicateCount, setDuplicateCount] = useState(1);
-
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    reValidateMode: "onChange",
-    defaultValues: {
-      aadhar: "",
-      pan: "",
-      voterid: "",
-      drivinglicense: "",
-    },
+  const [proof, setProof] = useState<any>({                     
+    aadhar: "",
+    pan: "",
+    voterId: "",
+    drivingLicense: "",
   });
+  const [selectedproof, setSelectedproof] = useState<any>();
+
   // console.log(drawerData.company.name);
   //   const [records, setRecords] = useState([]);
 
@@ -40,19 +32,19 @@ const UserListing = () => {
       value: "Select",
     },
     {
-      value: "aadhar card",
+      value: "aadhar",
       label: "Aadhar",
     },
     {
-      value: "pan card",
+      value: "pan",
       label: "PAN",
     },
     {
-      value: "voter id",
+      value: "voterId",
       label: "Voter Id",
     },
     {
-      value: "Driving license",
+      value: "drivingLicense",
       label: "Driving License",
     },
   ];
@@ -124,9 +116,13 @@ const UserListing = () => {
   const handleAddDuplicate = () => {
     if (duplicateCount < 4) {
       setDuplicateCount(duplicateCount + 1);
-    }else{
-      
+    } else {
     }
+  };
+
+  const onSubmit = () => {
+    const convert = JSON.stringify(proof);
+    localStorage.setItem("id-proof", convert);
   };
 
   return (
@@ -227,19 +223,46 @@ const UserListing = () => {
                 className="ml-44"
                 icon={<PlusOutlined />}
                 size={"small"}
-                onClick={handleAddDuplicate}
+                onClick={() => {
+                  setSelectedproof(""), handleAddDuplicate();
+                }}
               />
             </div>
             {[...Array(duplicateCount)].map((_, index) => (
               <div className="mt-5" key={index}>
                 <Space.Compact>
-                  <Select defaultValue="Select" options={options} />
-                  <Input defaultValue="" />
+                  <Select
+                    defaultValue="Select"
+                    options={options}
+                    onChange={(e) => {
+                      setSelectedproof(e);
+                    }}
+                  />
+                  <Input
+                    defaultValue=""
+                    onChange={(e) => {
+                      console.log(e.target.value);
+                      console.log(selectedproof);
+                      // proof[selectedproof as keyof typeof proof] =
+                      //   e.target.value;
+                      console.log("Proof", proof);
+                      // const filtered = selectedproof.filter((userproof)=> userproof)
+                      // setProof(filtered)
+
+                      setProof((prev: any) => {
+                        return {
+                          ...prev,
+                          [selectedproof]: e.target.value,
+                        };
+                      });
+                    }}
+                  />
                 </Space.Compact>
               </div>
-               
             ))}
-            <Button type="primary" className="mt-3">Submit</Button>
+            <Button type="primary" className="mt-3" onClick={onSubmit}>
+              Submit
+            </Button>
           </div>
         </Drawer>
       </section>
