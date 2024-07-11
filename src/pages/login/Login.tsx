@@ -37,7 +37,7 @@ const Login = () => {
 
   const onSubmit = (e: any) => {
     const data = localStorage.getItem("user-info");
-    const dataArray = data ? base64Decode(data) : [];
+    const dataArray = data ? base64Decode(data) : null;
 
     const filteredData = dataArray.map((item: any) => {
       if (item.username === e.username) {
@@ -49,6 +49,7 @@ const Login = () => {
       }
     });
     localStorage.setItem("user-info", btoa(JSON.stringify(filteredData)));
+    localStorage.setItem("user-Details", btoa(JSON.stringify([])));
 
     //   if (data !== null) {
     //     try {

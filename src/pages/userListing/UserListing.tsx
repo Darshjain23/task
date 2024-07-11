@@ -16,16 +16,14 @@ const UserListing = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [duplicateCount, setDuplicateCount] = useState(1);
-  const [proof, setProof] = useState<any>({                     
+  const [proof, setProof] = useState<any>({
     aadhar: "",
     pan: "",
     voterId: "",
     drivingLicense: "",
   });
   const [selectedproof, setSelectedproof] = useState<any>();
-
-  // console.log(drawerData.company.name);
-  //   const [records, setRecords] = useState([]);
+  const [userid, setUserid] = useState("");
 
   const options = [
     {
@@ -66,10 +64,8 @@ const UserListing = () => {
 
   const data = localStorage.getItem("user-info");
   const dataArray = data ? base64Decode(data) : [];
-  console.log("asdfghjkl;lkjhgfds", dataArray);
 
   useEffect(() => {
-    // Filter data based on searchQuery
     if (searchQuery.trim() === "") {
       setFilteredData([]);
     } else {
@@ -81,8 +77,6 @@ const UserListing = () => {
       setFilteredData(filtered);
     }
   }, [searchQuery, fetchedData.users]);
-
-  //   const rowSelection =
 
   const columns = [
     {
@@ -107,8 +101,6 @@ const UserListing = () => {
       key: "email",
     },
   ];
-
-  console.log("ASDFGHJ", [...Array(duplicateCount)]);
   const handleSearch = (e: any) => {
     setSearchQuery(e.target.value);
   };
@@ -120,10 +112,42 @@ const UserListing = () => {
     }
   };
 
+  // const LSData = localStorage.getItem("user-Details");
+  // console.log("LocalStorage", LSData);
+
+  btoa(JSON.stringify([]));
   const onSubmit = () => {
-    const convert = JSON.stringify(proof);
-    localStorage.setItem("id-proof", convert);
+    const data: any = {
+      id: userid,
+      dropdownData: proof,
+    };
+
+    const LSData: any = localStorage.getItem("user-Details");
+
+    if (!JSON.parse(atob(LSData)).length) {
+      localStorage.setItem("user-Details", btoa(JSON.stringify([data])));
+    } else {
+      const arr: any = JSON.parse(atob(LSData));
+      const duplicateData = arr.filter((i: any) => {
+        return i.id === userid;
+      });
+      if (duplicateData.length) {
+        console.log("duplicate value");
+      } else {
+        console.log("unique Value");
+      }
+    }
+
+    // const convert = JSON.stringify(data);
+    // localStorage.setItem("id-proof", convert);
   };
+
+  useEffect(() => {
+    const storedProof = localStorage.getItem("id-proof");
+    if (storedProof) {
+      setProof(JSON.parse(storedProof));
+    }
+  }, []);
 
   return (
     <>
@@ -161,8 +185,7 @@ const UserListing = () => {
                 onClick: (e: SyntheticEvent) => {
                   setOpen(true);
                   setdrawerData(record);
-                  console.log("event", e);
-                  console.log("record", record);
+                  setUserid(record.id);
                 },
               })}
             />
@@ -239,16 +262,10 @@ const UserListing = () => {
                     }}
                   />
                   <Input
-                    defaultValue=""
+                    defaultValue={proof[selectedproof] || ""}
                     onChange={(e) => {
-                      console.log(e.target.value);
-                      console.log(selectedproof);
                       // proof[selectedproof as keyof typeof proof] =
                       //   e.target.value;
-                      console.log("Proof", proof);
-                      // const filtered = selectedproof.filter((userproof)=> userproof)
-                      // setProof(filtered)
-
                       setProof((prev: any) => {
                         return {
                           ...prev,
